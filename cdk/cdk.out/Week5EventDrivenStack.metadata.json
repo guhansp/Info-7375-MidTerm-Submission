@@ -1,0 +1,1527 @@
+{
+  "/Week5EventDrivenStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    },
+    {
+      "type": "aws:cdk:acknowledged-rules",
+      "data": {
+        "CloudFormation-Validate::W3010": "Literal AZs in template are the result of accessing stack.availabilityZones, this is expected and safe"
+      },
+      "trace": [
+        "    ...aws-cdk-lib, jsii runtime...",
+        "    (no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    },
+    {
+      "type": "aws:cdk:templateFile",
+      "data": "Week5EventDrivenStack.template.json"
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "OrdersTable315BB997"
+      }
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "InventoryTableFD135387"
+      }
+    }
+  ],
+  "/Week5EventDrivenStack/SentNotificationsTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "SentNotificationsTableB2E9F25B"
+      }
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryProcessedTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "InventoryProcessedTableEB688540"
+      }
+    }
+  ],
+  "/Week5EventDrivenStack/AwsCdkKinesisEncryptedStreamsUnsupportedRegions": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AwsCdkKinesisEncryptedStreamsUnsupportedRegions"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/MidtermDashboardUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MidtermDashboardUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/ApiEndpoint": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiEndpoint"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersTableName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersTableName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryTableName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryTableName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/SentNotificationsTableName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SentNotificationsTableName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrderTopicArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrderTopicArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryQueueUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryQueueUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryDlqUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryDlqUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/NotificationDlqUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationDlqUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsStreamName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsStreamName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/DashboardUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersTable315BB997"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryTableFD135387"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/SentNotificationsTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SentNotificationsTableB2E9F25B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryProcessedTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryProcessedTableEB688540"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsStream/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsStreamD263FD56"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrderEventsTopic/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrderEventsTopic9AB57471"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/inventoryDlq/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "inventoryDlq0D2D14B2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/inventoryQueue/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "inventoryQueue1AF329D2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/notificationDlq/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "notificationDlq1B99BF1F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/notificationQueue/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "notificationQueue08A82707"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/analyticsDlq/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "analyticsDlq247E39CB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/analyticsQueue/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "analyticsQueue08DE51CB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrderProducer/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrderProducer72B63B2C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryConsumer/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryConsumer7C9D8AA9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/NotificationConsumer/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationConsumerDC1E109D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsConsumer/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsConsumer618E5509"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApi48294D44"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Account": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiAccount74B8FE66"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Endpoint": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiEndpointAC1CCDAC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/Admissions": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "WaitingRoomAdmissionsA0A41627"
+      }
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrRedisSubnets": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrRedisSubnets92778ADB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrRedis": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrRedis2CDF6D19"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AlertTopic/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlertTopic2720D535"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryDlqAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryDlqAlarmADF622E9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/NotificationDlqAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationDlqAlarmEF175D8A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsDlqAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsDlqAlarmA818DD46"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryAgeAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryAgeAlarmC4F29FB8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/NotificationAgeAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationAgeAlarm0328A662"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsAgeAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsAgeAlarm0ACBD707"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/ProducerErrorAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ProducerErrorAlarm22807D74"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryErrorAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryErrorAlarm214600AF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/NotificationErrorAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationErrorAlarm81AFD0C9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsErrorAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsErrorAlarm56CF72AF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/EventDrivenDashboard/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EventDrivenDashboard4A0B62F9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/MidtermDashboard/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MidtermDashboard5A2427D7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/inventoryQueue/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "inventoryQueuePolicyA9F1CCFE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/inventoryQueue/Week5EventDrivenStackOrderEventsTopic1CFC731A/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "inventoryQueueWeek5EventDrivenStackOrderEventsTopic1CFC731AD2AC31E7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/notificationQueue/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "notificationQueuePolicy90EE9390"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/notificationQueue/Week5EventDrivenStackOrderEventsTopic1CFC731A/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "notificationQueueWeek5EventDrivenStackOrderEventsTopic1CFC731A3737CA9D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/analyticsQueue/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "analyticsQueuePolicy2C8227EA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/analyticsQueue/Week5EventDrivenStackOrderEventsTopic1CFC731A/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "analyticsQueueWeek5EventDrivenStackOrderEventsTopic1CFC731A7A108C66"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrderProducer/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrderProducerServiceRole71E18628"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrderProducer/LogRetention/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrderProducerLogRetentionFC670935"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryConsumer/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryConsumerServiceRole5A9A41BD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryConsumer/LogRetention/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryConsumerLogRetention9BB59D49"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryConsumer/SqsEventSource:Week5EventDrivenStackinventoryQueue4640D1D6/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryConsumerSqsEventSourceWeek5EventDrivenStackinventoryQueue4640D1D625BD0F03"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/NotificationConsumer/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationConsumerServiceRole187ECFA8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/NotificationConsumer/LogRetention/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationConsumerLogRetentionB39EBB0B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/NotificationConsumer/SqsEventSource:Week5EventDrivenStacknotificationQueue408C951F/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationConsumerSqsEventSourceWeek5EventDrivenStacknotificationQueue408C951F7BBD2628"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsConsumer/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsConsumerServiceRole1B948EF4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsConsumer/LogRetention/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsConsumerLogRetentionD6FD473E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsConsumer/SqsEventSource:Week5EventDrivenStackanalyticsQueueBDF879EE/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsConsumerSqsEventSourceWeek5EventDrivenStackanalyticsQueueBDF879EE4E0E2216"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/CloudWatchRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiCloudWatchRole00EA2E11"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Deployment/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiDeployment7E9592496dfa5f5227865748b6be162f6fac709a"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/DeploymentStage.prod/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiDeploymentStageprod80C33D00"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/Admissions/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomAdmissionsA0A41627"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrVpc/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrVpc9E565155"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/LambdaSG/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomLambdaSG1FFF4566"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/RedisSG/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomRedisSGE5FD3743"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/RedisSG/from Week5EventDrivenStackWaitingRoomLambdaSG35ABCAD2:6379": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomRedisSGfromWeek5EventDrivenStackWaitingRoomLambdaSG35ABCAD2637974A9ADEA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/RedisSG/from Week5EventDrivenStackWaitingRoomLambdaSG35ABCAD2:6380": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomRedisSGfromWeek5EventDrivenStackWaitingRoomLambdaSG35ABCAD26380F1CF53A6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/Join/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomJoin3275F513"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/Status/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomStatus907A07C3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrderProducer/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrderProducerServiceRoleDefaultPolicyD9BF09A0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/InventoryConsumer/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InventoryConsumerServiceRoleDefaultPolicyD8212709"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/NotificationConsumer/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationConsumerServiceRoleDefaultPolicyE96DD8DF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/AnalyticsConsumer/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AnalyticsConsumerServiceRoleDefaultPolicy0FE4BD8C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/orders/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiordersDBA2FB62"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/health/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApihealth8EE2D4BF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomEE0AF06D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrVpcIsolatedSubnet1SubnetE5EFCFE7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../tmp/jsii-kernel-WpcScE/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:291 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrVpcIsolatedSubnet1RouteTable605E9A69"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../tmp/jsii-kernel-WpcScE/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:291 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrVpcIsolatedSubnet1RouteTableAssociation8D0F7F38"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../tmp/jsii-kernel-WpcScE/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:291 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrVpcIsolatedSubnet2Subnet42F17C28"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../tmp/jsii-kernel-WpcScE/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:291 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrVpcIsolatedSubnet2RouteTable445461BC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../tmp/jsii-kernel-WpcScE/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:291 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrVpcIsolatedSubnet2RouteTableAssociation1ED7E97F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../tmp/jsii-kernel-WpcScE/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:291 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/WrVpc/DDBEndpoint/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomWrVpcDDBEndpointCFFBB708"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/Join/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomJoinServiceRoleBF1C9152"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/Join/LogRetention/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomJoinLogRetentionD1B3A765"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/Status/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomStatusServiceRoleAB64FFA4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/Status/LogRetention/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomStatusLogRetention5493F0A5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/orders/POST/ApiPermission.Week5EventDrivenStackOrdersApiA0EAB9C1.POST..orders": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiordersPOSTApiPermissionWeek5EventDrivenStackOrdersApiA0EAB9C1POSTorders47BDD5B0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/orders/POST/ApiPermission.Test.Week5EventDrivenStackOrdersApiA0EAB9C1.POST..orders": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiordersPOSTApiPermissionTestWeek5EventDrivenStackOrdersApiA0EAB9C1POSTordersD2CAA52F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/orders/POST/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiordersPOSTAD0E8A63"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/health/GET/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApihealthGET4A33FAE5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/join/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomjoin79BE3DE9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomstatus08B0D16D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/WaitingRoom/Status/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WaitingRoomStatusServiceRoleDefaultPolicy5F14964D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/join/POST/ApiPermission.Week5EventDrivenStackOrdersApiA0EAB9C1.POST..waiting-room.join": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomjoinPOSTApiPermissionWeek5EventDrivenStackOrdersApiA0EAB9C1POSTwaitingroomjoin01388250"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/join/POST/ApiPermission.Test.Week5EventDrivenStackOrdersApiA0EAB9C1.POST..waiting-room.join": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomjoinPOSTApiPermissionTestWeek5EventDrivenStackOrdersApiA0EAB9C1POSTwaitingroomjoinF939E160"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/join/POST/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomjoinPOST82A2EAE7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/{visitor_id}/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomstatusvisitorid0A86FF0A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/{visitor_id}/GET/ApiPermission.Week5EventDrivenStackOrdersApiA0EAB9C1.GET..waiting-room.status.{visitor_id}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomstatusvisitoridGETApiPermissionWeek5EventDrivenStackOrdersApiA0EAB9C1GETwaitingroomstatusvisitorid5A73764D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/{visitor_id}/GET/ApiPermission.Test.Week5EventDrivenStackOrdersApiA0EAB9C1.GET..waiting-room.status.{visitor_id}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomstatusvisitoridGETApiPermissionTestWeek5EventDrivenStackOrdersApiA0EAB9C1GETwaitingroomstatusvisitoridF85114D9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/{visitor_id}/GET/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OrdersApiwaitingroomstatusvisitoridGETAED57036"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

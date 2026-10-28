@@ -1,0 +1,3589 @@
+{
+ "Description": "Info7375 Week 5 - Event-Driven Architecture Lab",
+ "Resources": {
+  "OrdersTable315BB997": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "order_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "order_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "TableName": "week5-orders"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersTable/Resource"
+   }
+  },
+  "InventoryTableFD135387": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "product_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "product_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "week5-inventory"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryTable/Resource"
+   }
+  },
+  "SentNotificationsTableB2E9F25B": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "order_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "order_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "week5-sent-notifications",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/SentNotificationsTable/Resource"
+   }
+  },
+  "InventoryProcessedTableEB688540": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "order_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "order_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "week5-inventory-processed",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryProcessedTable/Resource"
+   }
+  },
+  "AnalyticsStreamD263FD56": {
+   "Type": "AWS::Kinesis::Stream",
+   "Properties": {
+    "Name": "week5-analytics",
+    "RetentionPeriodHours": 24,
+    "ShardCount": 1,
+    "StreamEncryption": {
+     "Fn::If": [
+      "AwsCdkKinesisEncryptedStreamsUnsupportedRegions",
+      {
+       "Ref": "AWS::NoValue"
+      },
+      {
+       "EncryptionType": "KMS",
+       "KeyId": "alias/aws/kinesis"
+      }
+     ]
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AnalyticsStream/Resource"
+   }
+  },
+  "OrderEventsTopic9AB57471": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "DisplayName": "Info7375 Week5 Order Events",
+    "TopicName": "week5-order-events"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrderEventsTopic/Resource"
+   }
+  },
+  "inventoryDlq0D2D14B2": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "week5-inventory-dlq"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/inventoryDlq/Resource"
+   }
+  },
+  "inventoryQueue1AF329D2": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 345600,
+    "QueueName": "week5-inventory",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "inventoryDlq0D2D14B2",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 180
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/inventoryQueue/Resource"
+   }
+  },
+  "inventoryQueuePolicyA9F1CCFE": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": {
+          "Ref": "OrderEventsTopic9AB57471"
+         }
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "sns.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "inventoryQueue1AF329D2",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "inventoryQueue1AF329D2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/inventoryQueue/Policy/Resource"
+   }
+  },
+  "inventoryQueueWeek5EventDrivenStackOrderEventsTopic1CFC731AD2AC31E7": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": {
+     "Fn::GetAtt": [
+      "inventoryQueue1AF329D2",
+      "Arn"
+     ]
+    },
+    "FilterPolicy": {
+     "event_type": [
+      "OrderPlaced",
+      "OrderStatusUpdate"
+     ]
+    },
+    "Protocol": "sqs",
+    "TopicArn": {
+     "Ref": "OrderEventsTopic9AB57471"
+    }
+   },
+   "DependsOn": [
+    "inventoryQueuePolicyA9F1CCFE"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/inventoryQueue/Week5EventDrivenStackOrderEventsTopic1CFC731A/Resource"
+   }
+  },
+  "notificationDlq1B99BF1F": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "week5-notification-dlq"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/notificationDlq/Resource"
+   }
+  },
+  "notificationQueue08A82707": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 345600,
+    "QueueName": "week5-notification",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "notificationDlq1B99BF1F",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 180
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/notificationQueue/Resource"
+   }
+  },
+  "notificationQueuePolicy90EE9390": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": {
+          "Ref": "OrderEventsTopic9AB57471"
+         }
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "sns.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "notificationQueue08A82707",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "notificationQueue08A82707"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/notificationQueue/Policy/Resource"
+   }
+  },
+  "notificationQueueWeek5EventDrivenStackOrderEventsTopic1CFC731A3737CA9D": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": {
+     "Fn::GetAtt": [
+      "notificationQueue08A82707",
+      "Arn"
+     ]
+    },
+    "FilterPolicy": {
+     "event_type": [
+      "OrderPlaced",
+      "OrderStatusUpdate"
+     ]
+    },
+    "Protocol": "sqs",
+    "TopicArn": {
+     "Ref": "OrderEventsTopic9AB57471"
+    }
+   },
+   "DependsOn": [
+    "notificationQueuePolicy90EE9390"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/notificationQueue/Week5EventDrivenStackOrderEventsTopic1CFC731A/Resource"
+   }
+  },
+  "analyticsDlq247E39CB": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "week5-analytics-dlq"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/analyticsDlq/Resource"
+   }
+  },
+  "analyticsQueue08DE51CB": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 345600,
+    "QueueName": "week5-analytics",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "analyticsDlq247E39CB",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 180
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/analyticsQueue/Resource"
+   }
+  },
+  "analyticsQueuePolicy2C8227EA": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": {
+          "Ref": "OrderEventsTopic9AB57471"
+         }
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "sns.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "analyticsQueue08DE51CB",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "analyticsQueue08DE51CB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/analyticsQueue/Policy/Resource"
+   }
+  },
+  "analyticsQueueWeek5EventDrivenStackOrderEventsTopic1CFC731A7A108C66": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": {
+     "Fn::GetAtt": [
+      "analyticsQueue08DE51CB",
+      "Arn"
+     ]
+    },
+    "Protocol": "sqs",
+    "TopicArn": {
+     "Ref": "OrderEventsTopic9AB57471"
+    }
+   },
+   "DependsOn": [
+    "analyticsQueuePolicy2C8227EA"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/analyticsQueue/Week5EventDrivenStackOrderEventsTopic1CFC731A/Resource"
+   }
+  },
+  "OrderProducerServiceRole71E18628": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrderProducer/ServiceRole/Resource"
+   }
+  },
+  "OrderProducerServiceRoleDefaultPolicyD9BF09A0": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "OrdersTable315BB997",
+          "Arn"
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "sns:Publish",
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "OrderEventsTopic9AB57471"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "WaitingRoomAdmissionsA0A41627",
+          "Arn"
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "OrderProducerServiceRoleDefaultPolicyD9BF09A0",
+    "Roles": [
+     {
+      "Ref": "OrderProducerServiceRole71E18628"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrderProducer/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "OrderProducer72B63B2C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-002530140240-us-east-1",
+     "S3Key": "6d5f9c46add97f56c61d7e0e3f1a489e31946c694477c5ea17e379fff0f42d98.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ORDERS_TABLE": {
+       "Ref": "OrdersTable315BB997"
+      },
+      "INVENTORY_TABLE": {
+       "Ref": "InventoryTableFD135387"
+      },
+      "SENT_NOTIFICATIONS_TABLE": {
+       "Ref": "SentNotificationsTableB2E9F25B"
+      },
+      "INVENTORY_PROCESSED_TABLE": {
+       "Ref": "InventoryProcessedTableEB688540"
+      },
+      "ANALYTICS_STREAM": {
+       "Ref": "AnalyticsStreamD263FD56"
+      },
+      "ORDER_TOPIC_ARN": {
+       "Ref": "OrderEventsTopic9AB57471"
+      },
+      "AWS_REGION_NAME": "us-east-1",
+      "LOG_LEVEL": "INFO",
+      "WAITING_ROOM_ENABLED": "true",
+      "WAITING_ROOM_TABLE": {
+       "Ref": "WaitingRoomAdmissionsA0A41627"
+      }
+     }
+    },
+    "FunctionName": "week5-order-producer",
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "OrderProducerServiceRole71E18628",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 29
+   },
+   "DependsOn": [
+    "OrderProducerServiceRoleDefaultPolicyD9BF09A0",
+    "OrderProducerServiceRole71E18628"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrderProducer/Resource",
+    "aws:asset:path": "asset.6d5f9c46add97f56c61d7e0e3f1a489e31946c694477c5ea17e379fff0f42d98",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "OrderProducerLogRetentionFC670935": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrderProducer/LogRetention/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:PutRetentionPolicy",
+        "logs:DeleteRetentionPolicy"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "Roles": [
+     {
+      "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Handler": "index.handler",
+    "Runtime": "nodejs24.x",
+    "Timeout": 900,
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-002530140240-us-east-1",
+     "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource",
+    "aws:asset:path": "asset.2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "InventoryConsumerServiceRole5A9A41BD": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryConsumer/ServiceRole/Resource"
+   }
+  },
+  "InventoryConsumerServiceRoleDefaultPolicyD8212709": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "inventoryQueue1AF329D2",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "InventoryTableFD135387",
+          "Arn"
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "InventoryTableFD135387",
+          "Arn"
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "InventoryProcessedTableEB688540",
+          "Arn"
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "InventoryProcessedTableEB688540",
+          "Arn"
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "InventoryConsumerServiceRoleDefaultPolicyD8212709",
+    "Roles": [
+     {
+      "Ref": "InventoryConsumerServiceRole5A9A41BD"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryConsumer/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "InventoryConsumer7C9D8AA9": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-002530140240-us-east-1",
+     "S3Key": "726bdfb1c0ee999b5e92be97fb7d7b0c0c3d53446ef4546e16cc4525d3cf7826.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ORDERS_TABLE": {
+       "Ref": "OrdersTable315BB997"
+      },
+      "INVENTORY_TABLE": {
+       "Ref": "InventoryTableFD135387"
+      },
+      "SENT_NOTIFICATIONS_TABLE": {
+       "Ref": "SentNotificationsTableB2E9F25B"
+      },
+      "INVENTORY_PROCESSED_TABLE": {
+       "Ref": "InventoryProcessedTableEB688540"
+      },
+      "ANALYTICS_STREAM": {
+       "Ref": "AnalyticsStreamD263FD56"
+      },
+      "ORDER_TOPIC_ARN": {
+       "Ref": "OrderEventsTopic9AB57471"
+      },
+      "AWS_REGION_NAME": "us-east-1",
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "week5-inventory-consumer",
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "InventoryConsumerServiceRole5A9A41BD",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 29
+   },
+   "DependsOn": [
+    "InventoryConsumerServiceRoleDefaultPolicyD8212709",
+    "InventoryConsumerServiceRole5A9A41BD"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryConsumer/Resource",
+    "aws:asset:path": "asset.726bdfb1c0ee999b5e92be97fb7d7b0c0c3d53446ef4546e16cc4525d3cf7826",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "InventoryConsumerLogRetention9BB59D49": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryConsumer/LogRetention/Resource"
+   }
+  },
+  "InventoryConsumerSqsEventSourceWeek5EventDrivenStackinventoryQueue4640D1D625BD0F03": {
+   "Type": "AWS::Lambda::EventSourceMapping",
+   "Properties": {
+    "BatchSize": 10,
+    "EventSourceArn": {
+     "Fn::GetAtt": [
+      "inventoryQueue1AF329D2",
+      "Arn"
+     ]
+    },
+    "FunctionName": {
+     "Ref": "InventoryConsumer7C9D8AA9"
+    },
+    "FunctionResponseTypes": [
+     "ReportBatchItemFailures"
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryConsumer/SqsEventSource:Week5EventDrivenStackinventoryQueue4640D1D6/Resource"
+   }
+  },
+  "NotificationConsumerServiceRole187ECFA8": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/NotificationConsumer/ServiceRole/Resource"
+   }
+  },
+  "NotificationConsumerServiceRoleDefaultPolicyE96DD8DF": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "notificationQueue08A82707",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "SentNotificationsTableB2E9F25B",
+          "Arn"
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "SentNotificationsTableB2E9F25B",
+          "Arn"
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "ses:SendEmail",
+        "ses:SendRawEmail"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "NotificationConsumerServiceRoleDefaultPolicyE96DD8DF",
+    "Roles": [
+     {
+      "Ref": "NotificationConsumerServiceRole187ECFA8"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/NotificationConsumer/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "NotificationConsumerDC1E109D": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-002530140240-us-east-1",
+     "S3Key": "f6c759410383f04c824fd62b87935ae6555ff65872bb78de42fbe9c1eddad034.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ORDERS_TABLE": {
+       "Ref": "OrdersTable315BB997"
+      },
+      "INVENTORY_TABLE": {
+       "Ref": "InventoryTableFD135387"
+      },
+      "SENT_NOTIFICATIONS_TABLE": {
+       "Ref": "SentNotificationsTableB2E9F25B"
+      },
+      "INVENTORY_PROCESSED_TABLE": {
+       "Ref": "InventoryProcessedTableEB688540"
+      },
+      "ANALYTICS_STREAM": {
+       "Ref": "AnalyticsStreamD263FD56"
+      },
+      "ORDER_TOPIC_ARN": {
+       "Ref": "OrderEventsTopic9AB57471"
+      },
+      "AWS_REGION_NAME": "us-east-1",
+      "LOG_LEVEL": "INFO",
+      "FROM_EMAIL": "stub@example.com"
+     }
+    },
+    "FunctionName": "week5-notification-consumer",
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "NotificationConsumerServiceRole187ECFA8",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 29
+   },
+   "DependsOn": [
+    "NotificationConsumerServiceRoleDefaultPolicyE96DD8DF",
+    "NotificationConsumerServiceRole187ECFA8"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/NotificationConsumer/Resource",
+    "aws:asset:path": "asset.f6c759410383f04c824fd62b87935ae6555ff65872bb78de42fbe9c1eddad034",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "NotificationConsumerLogRetentionB39EBB0B": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/NotificationConsumer/LogRetention/Resource"
+   }
+  },
+  "NotificationConsumerSqsEventSourceWeek5EventDrivenStacknotificationQueue408C951F7BBD2628": {
+   "Type": "AWS::Lambda::EventSourceMapping",
+   "Properties": {
+    "BatchSize": 1,
+    "EventSourceArn": {
+     "Fn::GetAtt": [
+      "notificationQueue08A82707",
+      "Arn"
+     ]
+    },
+    "FunctionName": {
+     "Ref": "NotificationConsumerDC1E109D"
+    },
+    "FunctionResponseTypes": [
+     "ReportBatchItemFailures"
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/NotificationConsumer/SqsEventSource:Week5EventDrivenStacknotificationQueue408C951F/Resource"
+   }
+  },
+  "AnalyticsConsumerServiceRole1B948EF4": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AnalyticsConsumer/ServiceRole/Resource"
+   }
+  },
+  "AnalyticsConsumerServiceRoleDefaultPolicy0FE4BD8C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "analyticsQueue08DE51CB",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "kinesis:ListShards",
+        "kinesis:PutRecord",
+        "kinesis:PutRecords"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "AnalyticsStreamD263FD56",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AnalyticsConsumerServiceRoleDefaultPolicy0FE4BD8C",
+    "Roles": [
+     {
+      "Ref": "AnalyticsConsumerServiceRole1B948EF4"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AnalyticsConsumer/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "AnalyticsConsumer618E5509": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-002530140240-us-east-1",
+     "S3Key": "5074e14b5e55b31ac86af34b04b24052cc665f3674f79cfefddb490969f9155f.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ORDERS_TABLE": {
+       "Ref": "OrdersTable315BB997"
+      },
+      "INVENTORY_TABLE": {
+       "Ref": "InventoryTableFD135387"
+      },
+      "SENT_NOTIFICATIONS_TABLE": {
+       "Ref": "SentNotificationsTableB2E9F25B"
+      },
+      "INVENTORY_PROCESSED_TABLE": {
+       "Ref": "InventoryProcessedTableEB688540"
+      },
+      "ANALYTICS_STREAM": {
+       "Ref": "AnalyticsStreamD263FD56"
+      },
+      "ORDER_TOPIC_ARN": {
+       "Ref": "OrderEventsTopic9AB57471"
+      },
+      "AWS_REGION_NAME": "us-east-1",
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "week5-analytics-consumer",
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "AnalyticsConsumerServiceRole1B948EF4",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 29
+   },
+   "DependsOn": [
+    "AnalyticsConsumerServiceRoleDefaultPolicy0FE4BD8C",
+    "AnalyticsConsumerServiceRole1B948EF4"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AnalyticsConsumer/Resource",
+    "aws:asset:path": "asset.5074e14b5e55b31ac86af34b04b24052cc665f3674f79cfefddb490969f9155f",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AnalyticsConsumerLogRetentionD6FD473E": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AnalyticsConsumer/LogRetention/Resource"
+   }
+  },
+  "AnalyticsConsumerSqsEventSourceWeek5EventDrivenStackanalyticsQueueBDF879EE4E0E2216": {
+   "Type": "AWS::Lambda::EventSourceMapping",
+   "Properties": {
+    "BatchSize": 25,
+    "EventSourceArn": {
+     "Fn::GetAtt": [
+      "analyticsQueue08DE51CB",
+      "Arn"
+     ]
+    },
+    "FunctionName": {
+     "Ref": "AnalyticsConsumer618E5509"
+    },
+    "FunctionResponseTypes": [
+     "ReportBatchItemFailures"
+    ],
+    "MaximumBatchingWindowInSeconds": 30
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AnalyticsConsumer/SqsEventSource:Week5EventDrivenStackanalyticsQueueBDF879EE/Resource"
+   }
+  },
+  "OrdersApi48294D44": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Info7375 Week5 - Order ingestion endpoint",
+    "Name": "week5-orders-api"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Resource"
+   }
+  },
+  "OrdersApiCloudWatchRole00EA2E11": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/CloudWatchRole/Resource"
+   }
+  },
+  "OrdersApiAccount74B8FE66": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "OrdersApiCloudWatchRole00EA2E11",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "OrdersApi48294D44"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Account"
+   }
+  },
+  "OrdersApiDeployment7E9592496dfa5f5227865748b6be162f6fac709a": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Info7375 Week5 - Order ingestion endpoint",
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "DependsOn": [
+    "OrdersApihealthGET4A33FAE5",
+    "OrdersApihealth8EE2D4BF",
+    "OrdersApiordersPOSTAD0E8A63",
+    "OrdersApiordersDBA2FB62",
+    "OrdersApiwaitingroomjoinPOST82A2EAE7",
+    "OrdersApiwaitingroomjoin79BE3DE9",
+    "OrdersApiwaitingroomEE0AF06D",
+    "OrdersApiwaitingroomstatusvisitoridGETAED57036",
+    "OrdersApiwaitingroomstatusvisitorid0A86FF0A",
+    "OrdersApiwaitingroomstatus08B0D16D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "OrdersApiDeploymentStageprod80C33D00": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "OrdersApiDeployment7E9592496dfa5f5227865748b6be162f6fac709a"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": false,
+      "HttpMethod": "*",
+      "LoggingLevel": "INFO",
+      "MetricsEnabled": true,
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 1000,
+      "ThrottlingRateLimit": 500
+     },
+     {
+      "DataTraceEnabled": false,
+      "HttpMethod": "POST",
+      "ResourcePath": "/~1orders",
+      "ThrottlingBurstLimit": 100,
+      "ThrottlingRateLimit": 40
+     }
+    ],
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "OrdersApiAccount74B8FE66"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "OrdersApiordersDBA2FB62": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "OrdersApi48294D44",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "orders",
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/orders/Resource"
+   }
+  },
+  "OrdersApiordersPOSTApiPermissionWeek5EventDrivenStackOrdersApiA0EAB9C1POSTorders47BDD5B0": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "OrderProducer72B63B2C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:002530140240:",
+       {
+        "Ref": "OrdersApi48294D44"
+       },
+       "/",
+       {
+        "Ref": "OrdersApiDeploymentStageprod80C33D00"
+       },
+       "/POST/orders"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/orders/POST/ApiPermission.Week5EventDrivenStackOrdersApiA0EAB9C1.POST..orders"
+   }
+  },
+  "OrdersApiordersPOSTApiPermissionTestWeek5EventDrivenStackOrdersApiA0EAB9C1POSTordersD2CAA52F": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "OrderProducer72B63B2C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:002530140240:",
+       {
+        "Ref": "OrdersApi48294D44"
+       },
+       "/test-invoke-stage/POST/orders"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/orders/POST/ApiPermission.Test.Week5EventDrivenStackOrdersApiA0EAB9C1.POST..orders"
+   }
+  },
+  "OrdersApiordersPOSTAD0E8A63": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "TimeoutInMillis": 29000,
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "OrderProducer72B63B2C",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "OrdersApiordersDBA2FB62"
+    },
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/orders/POST/Resource"
+   }
+  },
+  "OrdersApihealth8EE2D4BF": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "OrdersApi48294D44",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "health",
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/health/Resource"
+   }
+  },
+  "OrdersApihealthGET4A33FAE5": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseTemplates": {
+        "application/json": "{\"status\":\"ok\"}"
+       },
+       "StatusCode": "200"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{\"statusCode\":200}"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "OrdersApihealth8EE2D4BF"
+    },
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/health/GET/Resource"
+   }
+  },
+  "OrdersApiwaitingroomEE0AF06D": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "OrdersApi48294D44",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "waiting-room",
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/Resource"
+   }
+  },
+  "OrdersApiwaitingroomjoin79BE3DE9": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "OrdersApiwaitingroomEE0AF06D"
+    },
+    "PathPart": "join",
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/join/Resource"
+   }
+  },
+  "OrdersApiwaitingroomjoinPOSTApiPermissionWeek5EventDrivenStackOrdersApiA0EAB9C1POSTwaitingroomjoin01388250": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "WaitingRoomJoin3275F513",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:002530140240:",
+       {
+        "Ref": "OrdersApi48294D44"
+       },
+       "/",
+       {
+        "Ref": "OrdersApiDeploymentStageprod80C33D00"
+       },
+       "/POST/waiting-room/join"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/join/POST/ApiPermission.Week5EventDrivenStackOrdersApiA0EAB9C1.POST..waiting-room.join"
+   }
+  },
+  "OrdersApiwaitingroomjoinPOSTApiPermissionTestWeek5EventDrivenStackOrdersApiA0EAB9C1POSTwaitingroomjoinF939E160": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "WaitingRoomJoin3275F513",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:002530140240:",
+       {
+        "Ref": "OrdersApi48294D44"
+       },
+       "/test-invoke-stage/POST/waiting-room/join"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/join/POST/ApiPermission.Test.Week5EventDrivenStackOrdersApiA0EAB9C1.POST..waiting-room.join"
+   }
+  },
+  "OrdersApiwaitingroomjoinPOST82A2EAE7": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "WaitingRoomJoin3275F513",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "OrdersApiwaitingroomjoin79BE3DE9"
+    },
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/join/POST/Resource"
+   }
+  },
+  "OrdersApiwaitingroomstatus08B0D16D": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "OrdersApiwaitingroomEE0AF06D"
+    },
+    "PathPart": "status",
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/Resource"
+   }
+  },
+  "OrdersApiwaitingroomstatusvisitorid0A86FF0A": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "OrdersApiwaitingroomstatus08B0D16D"
+    },
+    "PathPart": "{visitor_id}",
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/{visitor_id}/Resource"
+   }
+  },
+  "OrdersApiwaitingroomstatusvisitoridGETApiPermissionWeek5EventDrivenStackOrdersApiA0EAB9C1GETwaitingroomstatusvisitorid5A73764D": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "WaitingRoomStatus907A07C3",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:002530140240:",
+       {
+        "Ref": "OrdersApi48294D44"
+       },
+       "/",
+       {
+        "Ref": "OrdersApiDeploymentStageprod80C33D00"
+       },
+       "/GET/waiting-room/status/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/{visitor_id}/GET/ApiPermission.Week5EventDrivenStackOrdersApiA0EAB9C1.GET..waiting-room.status.{visitor_id}"
+   }
+  },
+  "OrdersApiwaitingroomstatusvisitoridGETApiPermissionTestWeek5EventDrivenStackOrdersApiA0EAB9C1GETwaitingroomstatusvisitoridF85114D9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "WaitingRoomStatus907A07C3",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:002530140240:",
+       {
+        "Ref": "OrdersApi48294D44"
+       },
+       "/test-invoke-stage/GET/waiting-room/status/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/{visitor_id}/GET/ApiPermission.Test.Week5EventDrivenStackOrdersApiA0EAB9C1.GET..waiting-room.status.{visitor_id}"
+   }
+  },
+  "OrdersApiwaitingroomstatusvisitoridGETAED57036": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "WaitingRoomStatus907A07C3",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "OrdersApiwaitingroomstatusvisitorid0A86FF0A"
+    },
+    "RestApiId": {
+     "Ref": "OrdersApi48294D44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/OrdersApi/Default/waiting-room/status/{visitor_id}/GET/Resource"
+   }
+  },
+  "WaitingRoomAdmissionsA0A41627": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "visitor_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "visitor_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "week5-wr-admissions",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/Admissions/Resource"
+   }
+  },
+  "WaitingRoomWrVpc9E565155": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Week5EventDrivenStack/WaitingRoom/WrVpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrVpc/Resource"
+   }
+  },
+  "WaitingRoomWrVpcIsolatedSubnet1SubnetE5EFCFE7": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.0.0/17",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "WaitingRoomWrVpc9E565155"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet1/Subnet"
+   }
+  },
+  "WaitingRoomWrVpcIsolatedSubnet1RouteTable605E9A69": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "WaitingRoomWrVpc9E565155"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet1/RouteTable"
+   }
+  },
+  "WaitingRoomWrVpcIsolatedSubnet1RouteTableAssociation8D0F7F38": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "WaitingRoomWrVpcIsolatedSubnet1RouteTable605E9A69"
+    },
+    "SubnetId": {
+     "Ref": "WaitingRoomWrVpcIsolatedSubnet1SubnetE5EFCFE7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet1/RouteTableAssociation"
+   }
+  },
+  "WaitingRoomWrVpcIsolatedSubnet2Subnet42F17C28": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.128.0/17",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "WaitingRoomWrVpc9E565155"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet2/Subnet"
+   }
+  },
+  "WaitingRoomWrVpcIsolatedSubnet2RouteTable445461BC": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "WaitingRoomWrVpc9E565155"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet2/RouteTable"
+   }
+  },
+  "WaitingRoomWrVpcIsolatedSubnet2RouteTableAssociation1ED7E97F": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "WaitingRoomWrVpcIsolatedSubnet2RouteTable445461BC"
+    },
+    "SubnetId": {
+     "Ref": "WaitingRoomWrVpcIsolatedSubnet2Subnet42F17C28"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrVpc/IsolatedSubnet2/RouteTableAssociation"
+   }
+  },
+  "WaitingRoomWrVpcDDBEndpointCFFBB708": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "RouteTableIds": [
+     {
+      "Ref": "WaitingRoomWrVpcIsolatedSubnet1RouteTable605E9A69"
+     },
+     {
+      "Ref": "WaitingRoomWrVpcIsolatedSubnet2RouteTable445461BC"
+     }
+    ],
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".dynamodb"
+      ]
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Week5EventDrivenStack/WaitingRoom/WrVpc"
+     }
+    ],
+    "VpcEndpointType": "Gateway",
+    "VpcId": {
+     "Ref": "WaitingRoomWrVpc9E565155"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrVpc/DDBEndpoint/Resource"
+   }
+  },
+  "WaitingRoomLambdaSG1FFF4566": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Week5EventDrivenStack/WaitingRoom/LambdaSG",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "WaitingRoomWrVpc9E565155"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/LambdaSG/Resource"
+   }
+  },
+  "WaitingRoomRedisSGE5FD3743": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Week5EventDrivenStack/WaitingRoom/RedisSG",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "WaitingRoomWrVpc9E565155"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/RedisSG/Resource"
+   }
+  },
+  "WaitingRoomRedisSGfromWeek5EventDrivenStackWaitingRoomLambdaSG35ABCAD2637974A9ADEA": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Allow Lambda to access Redis",
+    "FromPort": 6379,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "WaitingRoomRedisSGE5FD3743",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "WaitingRoomLambdaSG1FFF4566",
+      "GroupId"
+     ]
+    },
+    "ToPort": 6379
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/RedisSG/from Week5EventDrivenStackWaitingRoomLambdaSG35ABCAD2:6379"
+   }
+  },
+  "WaitingRoomRedisSGfromWeek5EventDrivenStackWaitingRoomLambdaSG35ABCAD26380F1CF53A6": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Allow Lambda to access Redis TLS",
+    "FromPort": 6380,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "WaitingRoomRedisSGE5FD3743",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "WaitingRoomLambdaSG1FFF4566",
+      "GroupId"
+     ]
+    },
+    "ToPort": 6380
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/RedisSG/from Week5EventDrivenStackWaitingRoomLambdaSG35ABCAD2:6380"
+   }
+  },
+  "WaitingRoomWrRedisSubnets92778ADB": {
+   "Type": "AWS::ElastiCache::SubnetGroup",
+   "Properties": {
+    "Description": "Subnets for Redis",
+    "SubnetIds": [
+     {
+      "Ref": "WaitingRoomWrVpcIsolatedSubnet1SubnetE5EFCFE7"
+     },
+     {
+      "Ref": "WaitingRoomWrVpcIsolatedSubnet2Subnet42F17C28"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrRedisSubnets"
+   }
+  },
+  "WaitingRoomWrRedis2CDF6D19": {
+   "Type": "AWS::ElastiCache::CacheCluster",
+   "Properties": {
+    "CacheNodeType": "cache.t3.micro",
+    "CacheSubnetGroupName": {
+     "Ref": "WaitingRoomWrRedisSubnets92778ADB"
+    },
+    "Engine": "redis",
+    "NumCacheNodes": 1,
+    "VpcSecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "WaitingRoomRedisSGE5FD3743",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/WrRedis"
+   }
+  },
+  "WaitingRoomJoinServiceRoleBF1C9152": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "WaitingRoomWrVpcIsolatedSubnet1RouteTableAssociation8D0F7F38",
+    "WaitingRoomWrVpcIsolatedSubnet2RouteTableAssociation1ED7E97F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/Join/ServiceRole/Resource"
+   }
+  },
+  "WaitingRoomJoin3275F513": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-002530140240-us-east-1",
+     "S3Key": "bac4058966703c5120fd3f0a6b58fd21a60f022cc38834bfd0123a6de6a67b0e.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMISSIONS_TABLE": {
+       "Ref": "WaitingRoomAdmissionsA0A41627"
+      },
+      "ADMIT_PER_SECOND": "10",
+      "POLL_INTERVAL_SECONDS": "5",
+      "ADMISSION_VALID_SECONDS": "600",
+      "REDIS_HOST": {
+       "Fn::GetAtt": [
+        "WaitingRoomWrRedis2CDF6D19",
+        "RedisEndpoint.Address"
+       ]
+      },
+      "REDIS_PORT": {
+       "Fn::GetAtt": [
+        "WaitingRoomWrRedis2CDF6D19",
+        "RedisEndpoint.Port"
+       ]
+      }
+     }
+    },
+    "FunctionName": "week5-wr-join",
+    "Handler": "join_handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "WaitingRoomJoinServiceRoleBF1C9152",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 10,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "WaitingRoomLambdaSG1FFF4566",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "WaitingRoomWrVpcIsolatedSubnet1SubnetE5EFCFE7"
+      },
+      {
+       "Ref": "WaitingRoomWrVpcIsolatedSubnet2Subnet42F17C28"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "WaitingRoomJoinServiceRoleBF1C9152",
+    "WaitingRoomWrVpcIsolatedSubnet1RouteTableAssociation8D0F7F38",
+    "WaitingRoomWrVpcIsolatedSubnet2RouteTableAssociation1ED7E97F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/Join/Resource",
+    "aws:asset:path": "asset.bac4058966703c5120fd3f0a6b58fd21a60f022cc38834bfd0123a6de6a67b0e",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "WaitingRoomJoinLogRetentionD1B3A765": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "WaitingRoomJoin3275F513"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "DependsOn": [
+    "WaitingRoomWrVpcIsolatedSubnet1RouteTableAssociation8D0F7F38",
+    "WaitingRoomWrVpcIsolatedSubnet2RouteTableAssociation1ED7E97F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/Join/LogRetention/Resource"
+   }
+  },
+  "WaitingRoomStatusServiceRoleAB64FFA4": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "WaitingRoomWrVpcIsolatedSubnet1RouteTableAssociation8D0F7F38",
+    "WaitingRoomWrVpcIsolatedSubnet2RouteTableAssociation1ED7E97F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/Status/ServiceRole/Resource"
+   }
+  },
+  "WaitingRoomStatusServiceRoleDefaultPolicy5F14964D": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "WaitingRoomAdmissionsA0A41627",
+          "Arn"
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "WaitingRoomAdmissionsA0A41627",
+          "Arn"
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "WaitingRoomStatusServiceRoleDefaultPolicy5F14964D",
+    "Roles": [
+     {
+      "Ref": "WaitingRoomStatusServiceRoleAB64FFA4"
+     }
+    ]
+   },
+   "DependsOn": [
+    "WaitingRoomWrVpcIsolatedSubnet1RouteTableAssociation8D0F7F38",
+    "WaitingRoomWrVpcIsolatedSubnet2RouteTableAssociation1ED7E97F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/Status/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "WaitingRoomStatus907A07C3": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-002530140240-us-east-1",
+     "S3Key": "bac4058966703c5120fd3f0a6b58fd21a60f022cc38834bfd0123a6de6a67b0e.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMISSIONS_TABLE": {
+       "Ref": "WaitingRoomAdmissionsA0A41627"
+      },
+      "ADMIT_PER_SECOND": "10",
+      "POLL_INTERVAL_SECONDS": "5",
+      "ADMISSION_VALID_SECONDS": "600",
+      "REDIS_HOST": {
+       "Fn::GetAtt": [
+        "WaitingRoomWrRedis2CDF6D19",
+        "RedisEndpoint.Address"
+       ]
+      },
+      "REDIS_PORT": {
+       "Fn::GetAtt": [
+        "WaitingRoomWrRedis2CDF6D19",
+        "RedisEndpoint.Port"
+       ]
+      }
+     }
+    },
+    "FunctionName": "week5-wr-status",
+    "Handler": "status_handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "WaitingRoomStatusServiceRoleAB64FFA4",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 10,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "WaitingRoomLambdaSG1FFF4566",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "WaitingRoomWrVpcIsolatedSubnet1SubnetE5EFCFE7"
+      },
+      {
+       "Ref": "WaitingRoomWrVpcIsolatedSubnet2Subnet42F17C28"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "WaitingRoomStatusServiceRoleDefaultPolicy5F14964D",
+    "WaitingRoomStatusServiceRoleAB64FFA4",
+    "WaitingRoomWrVpcIsolatedSubnet1RouteTableAssociation8D0F7F38",
+    "WaitingRoomWrVpcIsolatedSubnet2RouteTableAssociation1ED7E97F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/Status/Resource",
+    "aws:asset:path": "asset.bac4058966703c5120fd3f0a6b58fd21a60f022cc38834bfd0123a6de6a67b0e",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "WaitingRoomStatusLogRetention5493F0A5": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "WaitingRoomStatus907A07C3"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "DependsOn": [
+    "WaitingRoomWrVpcIsolatedSubnet1RouteTableAssociation8D0F7F38",
+    "WaitingRoomWrVpcIsolatedSubnet2RouteTableAssociation1ED7E97F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/WaitingRoom/Status/LogRetention/Resource"
+   }
+  },
+  "AlertTopic2720D535": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "DisplayName": "Info7375-Week5-Alerts"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AlertTopic/Resource"
+   }
+  },
+  "InventoryDlqAlarmADF622E9": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Inventory DLQ depth > 0 - CRITICAL: lost business outcomes",
+    "AlarmName": "Week5-Inventory-DLQ-Depth",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": {
+       "Fn::GetAtt": [
+        "inventoryDlq0D2D14B2",
+        "QueueName"
+       ]
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ApproximateNumberOfMessagesVisible",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Threshold": 0,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryDlqAlarm/Resource"
+   }
+  },
+  "NotificationDlqAlarmEF175D8A": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Notification DLQ depth > 0 - CRITICAL: lost business outcomes",
+    "AlarmName": "Week5-Notification-DLQ-Depth",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": {
+       "Fn::GetAtt": [
+        "notificationDlq1B99BF1F",
+        "QueueName"
+       ]
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ApproximateNumberOfMessagesVisible",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Threshold": 0,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/NotificationDlqAlarm/Resource"
+   }
+  },
+  "AnalyticsDlqAlarmA818DD46": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Analytics DLQ depth > 10 - analytics lag",
+    "AlarmName": "Week5-Analytics-DLQ-Depth",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": {
+       "Fn::GetAtt": [
+        "analyticsDlq247E39CB",
+        "QueueName"
+       ]
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ApproximateNumberOfMessagesVisible",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Threshold": 10,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AnalyticsDlqAlarm/Resource"
+   }
+  },
+  "InventoryAgeAlarmC4F29FB8": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Inventory oldest message > 300s - consumer lagging",
+    "AlarmName": "Week5-Inventory-OldestMessage",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": {
+       "Fn::GetAtt": [
+        "inventoryQueue1AF329D2",
+        "QueueName"
+       ]
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "MetricName": "ApproximateAgeOfOldestMessage",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Threshold": 300,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryAgeAlarm/Resource"
+   }
+  },
+  "NotificationAgeAlarm0328A662": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Notification oldest message > 300s - consumer lagging",
+    "AlarmName": "Week5-Notification-OldestMessage",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": {
+       "Fn::GetAtt": [
+        "notificationQueue08A82707",
+        "QueueName"
+       ]
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "MetricName": "ApproximateAgeOfOldestMessage",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Threshold": 300,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/NotificationAgeAlarm/Resource"
+   }
+  },
+  "AnalyticsAgeAlarm0ACBD707": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Analytics oldest message > 600s - consumer lagging",
+    "AlarmName": "Week5-Analytics-OldestMessage",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": {
+       "Fn::GetAtt": [
+        "analyticsQueue08DE51CB",
+        "QueueName"
+       ]
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "MetricName": "ApproximateAgeOfOldestMessage",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Threshold": 600,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AnalyticsAgeAlarm/Resource"
+   }
+  },
+  "ProducerErrorAlarm22807D74": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Producer Lambda error rate > 1%",
+    "AlarmName": "Week5-Producer-Errors",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Ref": "OrderProducer72B63B2C"
+      }
+     }
+    ],
+    "EvaluationPeriods": 2,
+    "MetricName": "Errors",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Threshold": 5,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/ProducerErrorAlarm/Resource"
+   }
+  },
+  "InventoryErrorAlarm214600AF": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Inventory Lambda error rate > 1%",
+    "AlarmName": "Week5-Inventory-Errors",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Ref": "InventoryConsumer7C9D8AA9"
+      }
+     }
+    ],
+    "EvaluationPeriods": 2,
+    "MetricName": "Errors",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Threshold": 5,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/InventoryErrorAlarm/Resource"
+   }
+  },
+  "NotificationErrorAlarm81AFD0C9": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Notification Lambda error rate > 1%",
+    "AlarmName": "Week5-Notification-Errors",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Ref": "NotificationConsumerDC1E109D"
+      }
+     }
+    ],
+    "EvaluationPeriods": 2,
+    "MetricName": "Errors",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Threshold": 5,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/NotificationErrorAlarm/Resource"
+   }
+  },
+  "AnalyticsErrorAlarm56CF72AF": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "AlertTopic2720D535"
+     }
+    ],
+    "AlarmDescription": "Analytics Lambda error rate > 1%",
+    "AlarmName": "Week5-Analytics-Errors",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Ref": "AnalyticsConsumer618E5509"
+      }
+     }
+    ],
+    "EvaluationPeriods": 2,
+    "MetricName": "Errors",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Threshold": 5,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/AnalyticsErrorAlarm/Resource"
+   }
+  },
+  "EventDrivenDashboard4A0B62F9": {
+   "Type": "AWS::CloudWatch::Dashboard",
+   "Properties": {
+    "DashboardBody": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"widgets\":[{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Queue depths (visible messages)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "inventoryQueue1AF329D2",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "notificationQueue08A82707",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "analyticsQueue08DE51CB",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Maximum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"DLQ depths - non-zero = action required\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "inventoryDlq0D2D14B2",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"inventory-dlq\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "notificationDlq1B99BF1F",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"notification-dlq\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "analyticsDlq247E39CB",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"analytics-dlq\",\"period\":60,\"stat\":\"Maximum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda invocations\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"label\":\"producer\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda errors\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"label\":\"producer\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda duration p99 (ms)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"label\":\"producer\",\"period\":60,\"stat\":\"p99\"}],[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"p99\"}],[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"p99\"}],[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"p99\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Oldest message age (s) - spikes = consumer lag\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/SQS\",\"ApproximateAgeOfOldestMessage\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "inventoryQueue1AF329D2",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateAgeOfOldestMessage\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "notificationQueue08A82707",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateAgeOfOldestMessage\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "analyticsQueue08DE51CB",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Maximum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":0,\"y\":18,\"properties\":{\"view\":\"timeSeries\",\"title\":\"API Gateway - request count\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/ApiGateway\",\"Count\",\"ApiName\",\"week5-orders-api\",{\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":8,\"y\":18,\"properties\":{\"view\":\"timeSeries\",\"title\":\"API Gateway - p99 latency (ms)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/ApiGateway\",\"IntegrationLatency\",\"ApiName\",\"week5-orders-api\",{\"period\":60,\"stat\":\"p99\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":16,\"y\":18,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Kinesis - records written\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Kinesis\",\"PutRecords.Records\",\"StreamName\",\"",
+       {
+        "Ref": "AnalyticsStreamD263FD56"
+       },
+       "\",{\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":24,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda throttles\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"label\":\"producer\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":24,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda concurrent executions\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"ConcurrentExecutions\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"label\":\"producer\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/Lambda\",\"ConcurrentExecutions\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/Lambda\",\"ConcurrentExecutions\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/Lambda\",\"ConcurrentExecutions\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Maximum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":30,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Kinesis - write throughput exceeded\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Kinesis\",\"WriteProvisionedThroughputExceeded\",\"StreamName\",\"",
+       {
+        "Ref": "AnalyticsStreamD263FD56"
+       },
+       "\",{\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":30,\"properties\":{\"view\":\"timeSeries\",\"title\":\"API Gateway - 4xx and 5xx errors\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/ApiGateway\",\"4XXError\",\"ApiName\",\"week5-orders-api\",{\"label\":\"4xx\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/ApiGateway\",\"5XXError\",\"ApiName\",\"week5-orders-api\",{\"label\":\"5xx\",\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}}]}"
+      ]
+     ]
+    },
+    "DashboardName": "Info7375-Week5-EventDriven"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/EventDrivenDashboard/Resource"
+   }
+  },
+  "MidtermDashboard5A2427D7": {
+   "Type": "AWS::CloudWatch::Dashboard",
+   "Properties": {
+    "DashboardBody": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"widgets\":[{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":0,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"API Gateway - 4xx and 5xx errors\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/ApiGateway\",\"4XXError\",\"ApiName\",\"week5-orders-api\",{\"label\":\"4xx\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/ApiGateway\",\"5XXError\",\"ApiName\",\"week5-orders-api\",{\"label\":\"5xx\",\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":8,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda concurrent executions\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"ConcurrentExecutions\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"label\":\"producer\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/Lambda\",\"ConcurrentExecutions\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/Lambda\",\"ConcurrentExecutions\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/Lambda\",\"ConcurrentExecutions\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/Lambda\",\"ConcurrentExecutions\",{\"label\":\"account total\",\"period\":60,\"stat\":\"Maximum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":16,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda invocations\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"label\":\"producer\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":0,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Queue depths (visible messages)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "inventoryQueue1AF329D2",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "notificationQueue08A82707",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "analyticsQueue08DE51CB",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Maximum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":8,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Oldest message age (s)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/SQS\",\"ApproximateAgeOfOldestMessage\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "inventoryQueue1AF329D2",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateAgeOfOldestMessage\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "notificationQueue08A82707",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateAgeOfOldestMessage\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "analyticsQueue08DE51CB",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"Maximum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":16,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"DLQ depths\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "inventoryDlq0D2D14B2",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"inventory-dlq\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "notificationDlq1B99BF1F",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"notification-dlq\",\"period\":60,\"stat\":\"Maximum\"}],[\"AWS/SQS\",\"ApproximateNumberOfMessagesVisible\",\"QueueName\",\"",
+       {
+        "Fn::GetAtt": [
+         "analyticsDlq247E39CB",
+         "QueueName"
+        ]
+       },
+       "\",{\"label\":\"analytics-dlq\",\"period\":60,\"stat\":\"Maximum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":0,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda errors and throttles\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[{\"label\":\"errors, all functions\",\"expression\":\"e0+e1+e2+e3+e4+e5\",\"period\":60}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"id\":\"e0\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"id\":\"e1\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"id\":\"e2\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"id\":\"e3\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "WaitingRoomJoin3275F513"
+       },
+       "\",{\"id\":\"e4\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Ref": "WaitingRoomStatus907A07C3"
+       },
+       "\",{\"id\":\"e5\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[{\"label\":\"throttles, all functions\",\"expression\":\"t0+t1+t2+t3+t4+t5\",\"period\":60}],[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"id\":\"t0\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"id\":\"t1\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"id\":\"t2\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"id\":\"t3\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "WaitingRoomJoin3275F513"
+       },
+       "\",{\"id\":\"t4\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Throttles\",\"FunctionName\",\"",
+       {
+        "Ref": "WaitingRoomStatus907A07C3"
+       },
+       "\",{\"id\":\"t5\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":8,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda duration p99 (ms)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Ref": "OrderProducer72B63B2C"
+       },
+       "\",{\"label\":\"producer\",\"period\":60,\"stat\":\"p99\"}],[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Ref": "InventoryConsumer7C9D8AA9"
+       },
+       "\",{\"label\":\"inventory\",\"period\":60,\"stat\":\"p99\"}],[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Ref": "NotificationConsumerDC1E109D"
+       },
+       "\",{\"label\":\"notification\",\"period\":60,\"stat\":\"p99\"}],[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Ref": "AnalyticsConsumer618E5509"
+       },
+       "\",{\"label\":\"analytics\",\"period\":60,\"stat\":\"p99\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":16,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Time in line (s): median and p95\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"Info7375/WaitingRoom\",\"TimeInLineSeconds\",{\"label\":\"median\",\"period\":60,\"stat\":\"p50\"}],[\"Info7375/WaitingRoom\",\"TimeInLineSeconds\",{\"label\":\"p95\",\"period\":60,\"stat\":\"p95\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":0,\"y\":18,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Visitors joined and admitted (per minute)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"Info7375/WaitingRoom\",\"Joined\",{\"label\":\"joined\",\"period\":60,\"stat\":\"Sum\"}],[\"Info7375/WaitingRoom\",\"Admitted\",{\"label\":\"admitted\",\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":8,\"y\":18,\"properties\":{\"view\":\"timeSeries\",\"title\":\"People waiting now (running total)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[{\"label\":\"waiting now\",\"expression\":\"RUNNING_SUM(j - a)\",\"period\":60}],[\"Info7375/WaitingRoom\",\"Joined\",{\"label\":\"joined\",\"id\":\"j\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}],[\"Info7375/WaitingRoom\",\"Admitted\",{\"label\":\"admitted\",\"id\":\"a\",\"visible\":false,\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":16,\"y\":18,\"properties\":{\"view\":\"timeSeries\",\"title\":\"API Gateway - request count\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/ApiGateway\",\"Count\",\"ApiName\",\"week5-orders-api\",{\"label\":\"requests\",\"period\":60,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"text\",\"width\":24,\"height\":1,\"x\":0,\"y\":24,\"properties\":{\"markdown\":\"### Your widgets\"}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":25,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Redis Connections & CPU\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/ElastiCache\",\"CurrConnections\",\"CacheClusterId\",\"",
+       {
+        "Ref": "WaitingRoomWrRedis2CDF6D19"
+       },
+       "\",{\"stat\":\"Maximum\"}],[\"AWS/ElastiCache\",\"CPUUtilization\",\"CacheClusterId\",\"",
+       {
+        "Ref": "WaitingRoomWrRedis2CDF6D19"
+       },
+       "\",{\"yAxis\":\"right\"}]],\"yAxis\":{}}}]}"
+      ]
+     ]
+    },
+    "DashboardName": "Info7375-Week5-Midterm"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/MidtermDashboard/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31STW/bMAz9Lb0r2pZ02Dl1u6LAinl2kWtBy5yjxpY0kWpgCP7vg6XESYFhF/O9R5qfWsv1t6/y8w0caaXaw6rXjYw1gzoIONJrbEcDg20bGV+g6VEUv00Ckzhog6RpjvYIw+zJaBJkSMYX67RK8QnUoSHltWNtTYq94pOgPyTjr4AhVcggfUvbazUuYqaT6GFoWpDxezDqnHHBD+9ouLbBK3wG57TpZve/1RL9oIlSExoGGSubp0z2Uv1cmDavQIRMcjsbQRt5F9QB+Q4IRW87kj9sVyGjSb2A0x0wHmGUsULirdMp+wVulbLBsLhH19txQMOzesVqhg7zemdQIaUhUsEzOeXM+Bl5b9tZymgSqNYy7lw6x64sROn1OzDWoTHIp2ucUGUD43LrrF+0LZFVGtJoj3munVMPpnVW58Z3ZbHQGlXwmsdHb4NL6f4rPJnOI9EksAdirUDtUcali+WnYnYUfSBGPwnV29AegdVexm0PPr3EDO6B9o0Fn3axkGn6sLbCmlangdJF5yWf3sZ11M/ALvAkypH31nzayC+38vbmjbRe+WBYDyirbP8Cxggm2FIDAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "Week5EventDrivenStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Conditions": {
+  "AwsCdkKinesisEncryptedStreamsUnsupportedRegions": {
+   "Fn::Or": [
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "cn-north-1"
+     ]
+    },
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "cn-northwest-1"
+     ]
+    }
+   ]
+  }
+ },
+ "Outputs": {
+  "OrdersApiEndpointAC1CCDAC": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "OrdersApi48294D44"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "OrdersApiDeploymentStageprod80C33D00"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "MidtermDashboardUrl": {
+   "Description": "One-page waiting-room dashboard",
+   "Value": "https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=Info7375-Week5-Midterm"
+  },
+  "ApiEndpoint": {
+   "Description": "Base URL - POST /orders, GET /health",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "OrdersApi48294D44"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "OrdersApiDeploymentStageprod80C33D00"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "OrdersTableName": {
+   "Description": "DynamoDB orders table",
+   "Value": {
+    "Ref": "OrdersTable315BB997"
+   }
+  },
+  "InventoryTableName": {
+   "Description": "DynamoDB inventory table",
+   "Value": {
+    "Ref": "InventoryTableFD135387"
+   }
+  },
+  "SentNotificationsTableName": {
+   "Description": "DynamoDB idempotency log for notifications",
+   "Value": {
+    "Ref": "SentNotificationsTableB2E9F25B"
+   }
+  },
+  "OrderTopicArn": {
+   "Description": "SNS topic - publish poison pills here for Scenario A",
+   "Value": {
+    "Ref": "OrderEventsTopic9AB57471"
+   }
+  },
+  "InventoryQueueUrl": {
+   "Description": "SQS inventory queue",
+   "Value": {
+    "Ref": "inventoryQueue1AF329D2"
+   }
+  },
+  "InventoryDlqUrl": {
+   "Description": "SQS inventory DLQ - inspect failed messages here",
+   "Value": {
+    "Ref": "inventoryDlq0D2D14B2"
+   }
+  },
+  "NotificationDlqUrl": {
+   "Description": "SQS notification DLQ",
+   "Value": {
+    "Ref": "notificationDlq1B99BF1F"
+   }
+  },
+  "AnalyticsStreamName": {
+   "Description": "Kinesis analytics stream",
+   "Value": {
+    "Ref": "AnalyticsStreamD263FD56"
+   }
+  },
+  "DashboardUrl": {
+   "Description": "CloudWatch dashboard - open before Break phase",
+   "Value": "https://us-east-1.console.aws.amazon.com/cloudwatch/home#dashboards:name=Info7375-Week5-EventDriven"
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

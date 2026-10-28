@@ -1,0 +1,44 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.4, pytest-9.1.1, pluggy-1.7.0 -- /home/guhan/workspace/week5-midterm-starter/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/guhan/workspace/week5-midterm-starter
+plugins: typeguard-2.13.3
+collecting ... collected 5 items
+
+tests/test_waiting_room_redis.py::test_join_answers_202 {"_aws": {"Timestamp": 1793137322121, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+PASSED
+tests/test_waiting_room_redis.py::test_concurrent_joins_maintain_strict_order {"_aws": {"Timestamp": 1793137322122, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322122, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322123, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322123, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322123, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322123, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322124, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322124, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322124, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322124, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+PASSED
+tests/test_waiting_room_redis.py::test_status_malformed_uuid PASSED
+tests/test_waiting_room_redis.py::test_status_waiting {"_aws": {"Timestamp": 1793137322285, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322285, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322286, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322286, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322286, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322287, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322287, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322287, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322287, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322288, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322288, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322288, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322289, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322289, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322289, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322289, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+PASSED
+tests/test_waiting_room_redis.py::test_status_admitted_and_persisted {"_aws": {"Timestamp": 1793137322337, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Joined", "Unit": "Count"}]}]}, "Joined": 1}
+{"_aws": {"Timestamp": 1793137322339, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "Admitted", "Unit": "Count"}]}]}, "Admitted": 1}
+{"_aws": {"Timestamp": 1793137322339, "CloudWatchMetrics": [{"Namespace": "Info7375/WaitingRoom", "Dimensions": [[]], "Metrics": [{"Name": "TimeInLineSeconds", "Unit": "Seconds"}]}]}, "TimeInLineSeconds": 0.0006201267242431641}
+PASSED
+
+============================== 5 passed in 0.27s ===============================
